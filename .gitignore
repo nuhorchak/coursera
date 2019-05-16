@@ -5,3 +5,4 @@
 .git
 packrat/lib*/
 packrat/src/
+.Rprofile
