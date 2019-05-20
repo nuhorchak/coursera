@@ -98,3 +98,57 @@ rankhospital <- function(state, outcome, num = "best"){
   }
   return(hospital)
 }
+
+
+# Write a function called rankall that takes two arguments: an outcome name (outcome) 
+# and a hospital ranking (num). The function reads the outcome-of-care-measures.csv 
+# file and returns a 2-column data frame containing the hospital in each state that has the 
+# ranking specified in num. For example the function call rankall("heart attack", "best") 
+# would return a data frame containing the names of the hospitals that are the best in their 
+# respective states for 30-day heart attack death rates. 
+# The function should return a value for every state (some may be NA). 
+# The first column in the data frame is named hospital, which containsthe hospital name, 
+# and the second column is named state, which contains the 2-character abbreviation for
+# the state name
+
+rankall <- function(outcome, num = "best"){
+  #error handling
+  outcome_list <- c("heart attack", "heart failure", "pneumonia")
+  if(!outcome %in% outcome_list){
+    stop("invalid outcome")
+  }
+  #conditional logic
+  if(outcome == "heart attack"){
+    outcome_of_care_measures %>% 
+      select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack") %>% 
+      filter(!is.na(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack)) %>% 
+      arrange(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, Hospital.Name) -> name
+  }else if (outcome == "heart failure"){
+    outcome_of_care_measures %>% 
+      select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure") %>% 
+      filter(!is.na(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure)) %>% 
+      arrange(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, Hospital.Name) -> name
+  }else{
+    outcome_of_care_measures %>% 
+      select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia") %>% 
+      filter(!is.na(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia)) %>% 
+      arrange(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, Hospital.Name) -> name
+  }
+  if(num=="best"){
+    hospital <- dplyr::first(name$Hospital.Name)
+  }else if(num=="worst"){
+    hospital <- dplyr::last(name$Hospital.Name)
+  }else{
+    hospital <- dplyr::nth(name$Hospital.Name, num)
+  }
+  return(hospital)
+}
+
+
+
+##### test
+
+outcome_of_care_measures %>%
+  select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia") %>% 
+  filter(!is.na(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia)) %>% 
+  group_by(State, Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia) -> rankall_test
