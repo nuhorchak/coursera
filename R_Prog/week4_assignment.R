@@ -4,6 +4,12 @@ library(tidyverse)
 hospital_data <- read_csv("R_Prog/hospital-data.csv")
 outcome_of_care_measures <- read.csv("R_Prog/outcome-of-care-measures.csv", colClasses = "character")
 
+#reading the data in as specified, introduces the following two columns as characters, therefore
+#they must be converted to compater numeric values
+outcome_of_care_measures$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure <- 
+  as.numeric(outcome_of_care_measures$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure)
+outcome_of_care_measures$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia <-
+  as.numeric(outcome_of_care_measures$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia)
 
 outcome_of_care_measures[, 11] <- as.numeric(outcome_of_care_measures[, 11])
 hist(outcome_of_care_measures[, 11])
@@ -16,27 +22,34 @@ hist(outcome_of_care_measures[, 11])
 # 30-day mortality for the specified outcome in that state
 
 best <- function(state, outcome){
+  
   if(outcome == "heart attack"){
-    name <- outcome_of_care_measures %>% 
-      select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack") %>% 
-      filter(State == state) %>% top_n(1) %>% select("Hospital.Name")
+      outcome_of_care_measures %>% 
+        select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack") %>% 
+        filter(State == state) %>% 
+        filter(!is.na(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack)) %>% 
+        arrange(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, Hospital.Name) -> name
   }else if (outcome == "heart failure"){
-    name <- outcome_of_care_measures %>% 
+    outcome_of_care_measures %>% 
       select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure") %>% 
-      filter(State == state)%>% top_n(1) %>% select("Hospital.Name")
+      filter(State == state) %>% 
+      filter(!is.na(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure)) %>% 
+      arrange(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, Hospital.Name) -> name
   }else{
-    name <- outcome_of_care_measures %>% 
+    outcome_of_care_measures %>% 
       select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia") %>% 
-      filter(State == state) %>% top_n(1) %>% select("Hospital.Name")
+      filter(State == state) %>% 
+      filter(!is.na(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia)) %>% 
+      arrange(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, Hospital.Name) -> name
   }
-  return(name[[1]])
+  return(name$Hospital.Name[1])
+  #return(name)
 }
 
+
+
 best("TX", "heart attack")
+best("TX", "heart failure")
+best("MD", "heart attack")
+best("MD", "pneumonia")
 
-
-outcome_of_care_measures %>% 
-  select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia") %>%
-  filter(State == "TX") %>% min(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia)
-
-  
