@@ -22,7 +22,15 @@ hist(outcome_of_care_measures[, 11])
 # 30-day mortality for the specified outcome in that state
 
 best <- function(state, outcome){
-  
+  #error handling
+  if(!state %in% outcome_of_care_measures$State){
+    stop("invalid state")
+  }
+  outcome_list <- c("heart attack", "heart failure", "pneumonia")
+  if(!outcome %in% outcome_list){
+    stop("invalid outcome")
+  }
+  #conditional logic
   if(outcome == "heart attack"){
       outcome_of_care_measures %>% 
         select("State", "Hospital.Name", "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack") %>% 
@@ -45,11 +53,4 @@ best <- function(state, outcome){
   return(name$Hospital.Name[1])
   #return(name)
 }
-
-
-
-best("TX", "heart attack")
-best("TX", "heart failure")
-best("MD", "heart attack")
-best("MD", "pneumonia")
 
