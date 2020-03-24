@@ -1,0 +1,32 @@
+> factor_test(10)
+Unit: microseconds
+                    expr   min    lq    mean median     uq   max neval
+   Factorial_func(input)   9.1   9.6  10.415  10.00  11.30  14.8   100
+   Factorial_loop(input)   3.6   4.1   5.184   4.55   5.40  44.4   100
+    Factorial_mem(input)  12.4  12.9  14.305  14.45  15.35  20.0   100
+ Factorial_reduce(input) 412.6 418.4 428.757 420.30 425.00 759.7   100
+
+> factor_test(50)
+Unit: microseconds
+                    expr   min     lq    mean median     uq   max neval
+   Factorial_func(input)  22.9  23.65  25.813  24.90  27.85  39.7   100
+   Factorial_loop(input)   3.0   3.60   4.020   4.10   4.30   5.8   100
+    Factorial_mem(input)  31.1  32.05  34.605  34.00  35.65  62.5   100
+ Factorial_reduce(input) 350.5 355.15 384.684 367.35 404.75 657.5   100
+
+> factor_test(100)
+Unit: microseconds
+                    expr   min     lq    mean median     uq   max neval
+   Factorial_func(input)  47.3  49.10  52.571  50.60  54.10 105.1   100
+   Factorial_loop(input)   4.7   5.35   5.834   5.80   6.05   9.8   100
+    Factorial_mem(input)  62.3  64.85  68.289  66.45  68.65 122.9   100
+ Factorial_reduce(input) 523.8 536.35 566.824 551.45 577.10 838.4   100
+
+> factor_test(1000)
+Unit: microseconds
+                    expr    min      lq     mean  median      uq     max neval
+   Factorial_func(input)  494.4  506.65  771.048  522.05  829.80  3539.3   100
+   Factorial_loop(input)   32.5   33.70   45.566   34.35   45.75   300.7   100
+    Factorial_mem(input)  639.2  657.35 1031.863  676.15 1190.30 12464.6   100
+ Factorial_reduce(input) 3594.5 3791.80 5529.058 4066.55 6081.45 21669.1   100
+> 
